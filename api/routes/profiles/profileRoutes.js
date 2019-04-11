@@ -38,4 +38,30 @@ router.get("/all", auth, roleCheck(["agent", "admin"]), async (req, res) => {
   }
 });
 
+//@route     POST api/profile/
+//@desc      create/update current users profile
+//@access    PRIVATE
+router.post("/", auth, async (req, res) => {
+  const errs = {};
+  const profileFields = {};
+  profileFields.user = req.user.id;
+
+  profileFields.gender = req.user.gender;
+  profileFields.birthday = req.user.birthday;
+  profileFields.birthCity = req.user.birthCity;
+  profileFields.birthCountry = req.user.birthCountry;
+  profileFields.citizenship = req.user.citizenship;
+  profileFields.language = req.user.language;
+  profileFields.maritalStatus = req.user.maritalStatus;
+
+  const profile = await profileService.findProfileById(req.user.id);
+  if (profile) {
+    const updatedProfile = profileService.updateProfile(id, profileFields);
+    res.json(updatedProfile);
+  } else {
+    const newProfile = await profileService.createProfile(profileFields);
+    res.json(newProfile);
+  }
+});
+
 exports.router = router;

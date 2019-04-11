@@ -3,9 +3,17 @@
 const { model: User } = require("./userModel");
 
 exports.findUserByEmail = async email => {
-  return await User.findOne({ email });
+  try {
+    return await User.findOne({ email });
+  } catch (e) {
+    throw e;
+  }
 };
 
 exports.save = async user => {
-  return await user.save();
+  try {
+    return await user.save();
+  } catch (e) {
+    throw e;
+  }
 };

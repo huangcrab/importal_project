@@ -2,12 +2,12 @@
 
 const express = require("express");
 const router = express.Router();
-const bcrypt = require("bcryptjs");
+
 const gravatar = require("gravatar");
-const jwt = require("jsonwebtoken");
+
 const roleCheck = require("../../middleware/roleCheck");
 const { model: User } = require("./userModel");
-const { SECRET } = require("../../utils/constants");
+
 const auth = require("../../middleware/auth");
 const userService = require("./userService");
 const tokenService = require("../../utils/tokenService");
