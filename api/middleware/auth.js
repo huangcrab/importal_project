@@ -8,7 +8,8 @@ module.exports = async (req, res, next) => {
   const authHeader = req.get("authorization");
 
   if (!authHeader) {
-    next(new Error("unauthorized"));
+    res.status(401).json(new Error("Unauthorized"));
+    return;
   }
 
   const token = authHeader.split(" ")[1];
@@ -18,6 +19,6 @@ module.exports = async (req, res, next) => {
     req.user = decoded;
     next();
   } catch (e) {
-    next(new Error("unauthorized"));
+    next(e);
   }
 };

@@ -18,6 +18,9 @@ const errorHandlers = require("./middleware/errorHandlers");
 // 4. Require routes
 const { router: userRoutes } = require("./routes/users/userRoutes");
 const { router: profileRoutes } = require("./routes/profiles/profileRoutes");
+const {
+  router: employmentRoutes
+} = require("./routes/employments/employmentRoutes");
 
 // 5. Require conatants
 const { PORT } = require("./utils/constants");
@@ -28,6 +31,7 @@ applyMiddleware(middleWare, router);
 // 7. Utilise routes
 router.use("/api/users", userRoutes);
 router.use("/api/profiles", profileRoutes);
+router.use("/api/employments", employmentRoutes);
 
 // 8. Apply error handling middleware (meaningfully last)
 applyMiddleware(errorHandlers, router);

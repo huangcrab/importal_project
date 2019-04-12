@@ -3,6 +3,10 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const EducationSchema = new Schema({
+  profile: {
+    type: Schema.Types.ObjectId,
+    ref: "profiles"
+  },
   title: String,
   school: String,
   major: String,
