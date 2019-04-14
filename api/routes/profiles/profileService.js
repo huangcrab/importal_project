@@ -4,10 +4,10 @@ const { model: Profile } = require("./profileModel");
 
 exports.findProfileById = async id => {
   try {
-    return await Profile.findOne({ user: id }).populate("user", [
-      "name",
-      "avatar"
-    ]);
+    return await Profile.findOne({ user: id })
+      .populate("user", ["name", "avatar"])
+      .populate("employment", ["title", "company"])
+      .populate("education", ["degree", "school"]);
   } catch (e) {
     throw e;
   }

@@ -3,47 +3,50 @@
 const express = require("express");
 const router = express.Router();
 
-const applicationFormService = require("./applicationFormService");
+const applicationService = require("./applicationService");
 const roleCheck = require("../../middleware/roleCheck");
 const auth = require("../../middleware/auth");
 
-//@route     GET api/applicationForms/all
-//@desc      get all applicationForms
+//@route     GET api/applications/
+//@desc      get current users applications
 //@access    PRIVATE
 router.get("/", auth, async (req, res, next) => {
   try {
     const errs = {};
-    const forms = await applicationFormService.findApplicationForms();
-
-    if (forms.length === 0) {
-      errs.noforms = "There is no froms available";
-      return res.status(404).json(errs);
-    }
-    res.json({ data: forms });
-  } catch (e) {
-    next(e);
-  }
-});
-
-//@route     GET api/applicationForms/:form_id
-//@desc      get applicationForm by id
-//@access    PRIVATE
-router.get("/", auth, async (req, res, next) => {
-  try {
-    const errs = {};
-    const forms = await applicationFormService.findApplicationFormById(
-      req.form.id
+    const applications = await applicationService.findApplicationsByUserId(
+      req.user.id
     );
 
-    if (forms.length === 0) {
-      errs.noforms = "There is no froms available";
+    if (applications.length === 0) {
+      errs.noprofile = "There is no applications for this user";
       return res.status(404).json(errs);
     }
-    res.json({ data: forms });
+    res.json({ data: applications });
   } catch (e) {
     next(e);
   }
 });
+
+//@route     GET api/profiles/all
+//@desc      get all profiles
+//@access    PRIVATE AGENT ADMIN
+router.get(
+  "/all",
+  auth,
+  roleCheck(["agent", "admin"]),
+  async (req, res, next) => {
+    try {
+      const profiles = await profileService.findAllProfiles();
+      if (!profiles) {
+        errs.noprofile = "There are no profiles";
+        return res.status(404).json(errs);
+      }
+      res.json(profiles);
+    } catch (e) {
+      next(e);
+    }
+  }
+);
 
 //@route     POST api/applications/
 //@desc      create/update applications

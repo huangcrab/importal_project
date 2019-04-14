@@ -21,6 +21,13 @@ const { router: profileRoutes } = require("./routes/profiles/profileRoutes");
 const {
   router: employmentRoutes
 } = require("./routes/employments/employmentRoutes");
+const {
+  router: educationRoutes
+} = require("./routes/educations/educationRoutes");
+
+const {
+  router: applicationRoutes
+} = require("./routes/applications/applicationRoutes");
 
 // 5. Require conatants
 const { PORT } = require("./utils/constants");
@@ -32,6 +39,8 @@ applyMiddleware(middleWare, router);
 router.use("/api/users", userRoutes);
 router.use("/api/profiles", profileRoutes);
 router.use("/api/employments", employmentRoutes);
+router.use("/api/educations", educationRoutes);
+router.use("/api/applications", applicationRoutes);
 
 // 8. Apply error handling middleware (meaningfully last)
 applyMiddleware(errorHandlers, router);

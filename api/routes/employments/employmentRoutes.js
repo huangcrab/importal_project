@@ -9,6 +9,23 @@ const employmentService = require("./employmentService");
 
 const validateEmploymentInput = require("../../utils/validation/employment");
 
+//@route     GET api/employments/
+//@desc      get employments
+//@access    PRIVATE
+router.get("/", auth, async (req, res, next) => {
+  try {
+    const profile = await profileService.findProfileById(req.user.id);
+    if (profile.id) {
+      const employments = await employmentService.getEmployments(profile.id);
+      res.json({ data: employments });
+    } else {
+      res.status(404).json({ message: "Profile is not found" });
+    }
+  } catch (e) {
+    throw e;
+  }
+});
+
 //@route     POST api/employments/
 //@desc      add or update employment
 //@access    PRIVATE
@@ -36,7 +53,7 @@ router.post("/", auth, async (req, res, next) => {
     profile.employment.unshift(savedEmployment.id);
     profileService.createProfile(profile);
 
-    res.json(profile);
+    res.json({ data: [profile] });
   } catch (e) {
     next(e);
   }
@@ -56,7 +73,7 @@ router.delete("/:emp_id", auth, async (req, res, next) => {
           req.params.emp_id
         );
         const newProfile = await profileService.createProfile(profile);
-        res.json({ profile: newProfile, removed });
+        res.json({ data: [{ profile: newProfile }, { removed }] });
       } catch (e) {
         next(e);
       }

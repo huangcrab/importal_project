@@ -7,7 +7,7 @@ const EducationSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: "profiles"
   },
-  title: String,
+  degree: String,
   school: String,
   major: String,
   from: Date,
