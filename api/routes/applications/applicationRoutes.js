@@ -27,26 +27,30 @@ router.get("/", auth, async (req, res, next) => {
   }
 });
 
-//@route     GET api/profiles/all
-//@desc      get all profiles
-//@access    PRIVATE AGENT ADMIN
-router.get(
-  "/all",
-  auth,
-  roleCheck(["agent", "admin"]),
-  async (req, res, next) => {
-    try {
-      const profiles = await profileService.findAllProfiles();
-      if (!profiles) {
-        errs.noprofile = "There are no profiles";
-        return res.status(404).json(errs);
+//@route     GET api/applications/:app_id
+//@desc      get users application by id
+//@access    PRIVATE
+router.get("/:app_id", auth, async (req, res, next) => {
+  try {
+    const errs = {};
+    const { id } = req.user;
+    const application = await applicationService.findApplicationById(
+      req.params.app_id
+    );
+    if (application) {
+      if (id !== application.user) {
+        res.status(401).json({
+          message: "You are not authoraized to view this application"
+        });
       }
-      res.json(profiles);
-    } catch (e) {
-      next(e);
+      res.json({ data: applications });
+    } else {
+      res.status(404).json({ message: "Application Not Found" });
     }
+  } catch (e) {
+    next(e);
   }
-);
+});
 
 //@route     POST api/applications/
 //@desc      create/update applications
@@ -54,16 +58,35 @@ router.get(
 router.post("/", auth, async (req, res, next) => {
   try {
     const errs = {};
-    const applicationFields = {};
-    applicationFields.user = req.user.id;
-
-    const profile = await profileService.findProfileById(req.user.id);
-    if (profile) {
-      const updatedProfile = profileService.updateProfile(id, profileFields);
-      res.json(updatedProfile);
+    const applicationFields = req.body;
+    const applications = await applicationService.findApplicationsByUserId(
+      req.user.id
+    );
+    // if (applications.length === 0) {
+    //   errs.noprofile = "There is no applications for this user";
+    //   return res.status(404).json(errs);
+    // }
+    console.log(applications.map(application => application._id));
+    console.log(applicationFields.id);
+    if (
+      applications
+        .map(application => application._id.toString())
+        .indexOf(applicationFields.id) !== -1
+    ) {
+      console.log("tet");
+      //FOUND - UPDATE
+      const updatedApplication = await applicationService.updateApplication(
+        applicationFields.id,
+        applicationFields
+      );
+      res.json({ data: updatedApplication });
     } else {
-      const newProfile = await profileService.createProfile(profileFields);
-      res.json(newProfile);
+      delete applicationFields.id;
+      applicationFields.user = req.user.id;
+      const newApplication = await applicationService.createApplication(
+        applicationFields
+      );
+      res.json({ data: newApplication });
     }
   } catch (e) {
     next(e);

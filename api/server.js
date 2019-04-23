@@ -29,6 +29,10 @@ const {
   router: applicationRoutes
 } = require("./routes/applications/applicationRoutes");
 
+const {
+  router: applicationFormRoutes
+} = require("./routes/applicationForms/applicationFormRoutes");
+
 // 5. Require conatants
 const { PORT } = require("./utils/constants");
 
@@ -41,6 +45,7 @@ router.use("/api/profiles", profileRoutes);
 router.use("/api/employments", employmentRoutes);
 router.use("/api/educations", educationRoutes);
 router.use("/api/applications", applicationRoutes);
+router.use("/api/applicationForms", applicationFormRoutes);
 
 // 8. Apply error handling middleware (meaningfully last)
 applyMiddleware(errorHandlers, router);

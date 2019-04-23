@@ -28,11 +28,11 @@ router.get("/", auth, async (req, res, next) => {
 //@route     GET api/applicationForms/:form_id
 //@desc      get applicationForm by id
 //@access    PRIVATE
-router.get("/", auth, async (req, res, next) => {
+router.get("/:form_id", auth, async (req, res, next) => {
   try {
     const errs = {};
     const forms = await applicationFormService.findApplicationFormById(
-      req.form.id
+      req.params.form_id
     );
 
     if (forms.length === 0) {
@@ -45,26 +45,55 @@ router.get("/", auth, async (req, res, next) => {
   }
 });
 
-//@route     POST api/applications/
-//@desc      create/update applications
+//@route     POST api/applicationForms/:form_id
+//@desc      create/update applicationForms
 //@access    PRIVATE
-router.post("/", auth, async (req, res, next) => {
-  try {
-    const errs = {};
-    const applicationFields = {};
-    applicationFields.user = req.user.id;
-
-    const profile = await profileService.findProfileById(req.user.id);
-    if (profile) {
-      const updatedProfile = profileService.updateProfile(id, profileFields);
-      res.json(updatedProfile);
-    } else {
-      const newProfile = await profileService.createProfile(profileFields);
-      res.json(newProfile);
+router.post(
+  "/",
+  auth,
+  roleCheck(["agent", "admin"]),
+  async (req, res, next) => {
+    try {
+      const errs = {};
+      const applicationFields = req.body;
+      const { id } = applicationFields;
+      const applicationForm = await applicationFormService.findApplicationFormById(
+        id
+      );
+      if (applicationForm) {
+        const updatedForm = await applicationFormService.updateApplicationForm(
+          id,
+          applicationFields
+        );
+        res.json({ data: updatedForm });
+      } else {
+        const newApplicationForm = await applicationFormService.createApplicationForm(
+          applicationFields
+        );
+        res.json({ data: newApplicationForm });
+      }
+    } catch (e) {
+      next(e);
     }
-  } catch (e) {
-    next(e);
   }
-});
+);
+
+//@route     DELETE api/applicationForms/
+//@desc      delete applicationForms
+//@access    PRIVATE
+router.delete(
+  "/:app_id",
+  auth,
+  roleCheck(["agent", "admin"]),
+  async (req, res, next) => {
+    const id = req.params.app_id;
+    try {
+      const removed = await applicationFormService.removeApplicationForm(id);
+      res.json({ data: removed });
+    } catch (e) {
+      next(e);
+    }
+  }
+);
 
 exports.router = router;

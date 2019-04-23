@@ -13,6 +13,12 @@ const ApplicationSchema = new Schema({
   },
   status: {
     type: String,
+    required: true,
+    enum: ["pending", "approved", "review"],
+    default: "pending"
+  },
+  populatedFields: {
+    type: Object,
     required: true
   },
   assignedTo: {

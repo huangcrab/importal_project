@@ -20,8 +20,8 @@ exports.findApplicationById = async id => {
 
 module.exports.updateApplication = async (id, fields) => {
   try {
-    return await Application.findByIdAndUpdate(
-      { id },
+    return await Application.findOneAndUpdate(
+      { _id: id },
       { $set: fields },
       { new: true }
     );
