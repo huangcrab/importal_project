@@ -7,11 +7,6 @@ const CardImageOverlay = styled.div`
   background: rgba(255, 255, 255, 0.5);
 `;
 
-const CardTitle = styled.h3`
-  display: block;
-  /* margin-top: -55px; */
-`;
-
 const ListView = styled.div`
   height: 80vh;
 `;
@@ -22,7 +17,7 @@ export default function Dashboard() {
       <div className="row">
         <div className="col-md-6">
           <div className="col-md-12 text-right">
-            <CardTitle className="card-title ">Choose your Category</CardTitle>
+            <h3 className="card-title ">Choose your Category</h3>
             {/* Category Description */}
             <div className="card bg-dark">
               <img
