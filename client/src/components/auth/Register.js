@@ -49,44 +49,15 @@ class Register extends Component {
 
     return (
       <div>
-        <iframe
-          title="soundcloud"
-          width="100%"
-          height="60"
-          scrolling="no"
-          frameBorder="no"
-          //allow="autoplay"
-          src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/136501354&color=%232a3521&auto_play=true&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true"
-        />
-
         <div className="register">
           <div className="container">
             <div className="row">
               <div className="col-md-8 m-auto">
                 <h1 className="display-4 text-center">Sign Up</h1>
-                <p className="lead text-center">Create your ZoneX account</p>
+                <p className="lead text-center">
+                  Create your Immportal account
+                </p>
                 <form onSubmit={this.onSubmit}>
-                  {/* <div className="form-group">
-                    <input
-                      type="text"
-                      // className={classnames('form-control form-control-lg',{
-                      //   'is-invalid': errors.name
-                      // })}
-
-                      className={
-                        errors.name
-                          ? "form-control form-control-lg is-invalid"
-                          : "form-control form-control-lg"
-                      }
-                      placeholder="Name"
-                      name="name"
-                      value={this.state.name}
-                      onChange={this.onChange}
-                    />
-                    {errors.name && (
-                      <div className="invalid-feedback">{errors.name}</div>
-                    )}
-                  </div> */}
                   <TextFieldGroup
                     type="text"
                     error={errors.name}
@@ -102,8 +73,6 @@ class Register extends Component {
                     name="email"
                     value={this.state.email}
                     onChange={this.onChange}
-                    info="This site uses Gravatar so if you want a profile image,
-                    use a Gravatar email"
                   />
                   <TextFieldGroup
                     type="password"
