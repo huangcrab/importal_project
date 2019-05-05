@@ -53,7 +53,6 @@ applyMiddleware(errorHandlers, router);
 // 9. Create a server from express instance
 const server = http.createServer(router);
 
-router.use("/", express.static("public"));
 // 10. Start server
 const { mongoUri } = require("./utils/constants");
 mongoose.connect(mongoUri, { useNewUrlParser: true }).then(() => {
