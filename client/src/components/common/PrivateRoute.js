@@ -3,16 +3,27 @@ import { Route, Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 
-const PrivateRoute = ({ component: Component, auth, ...rest }) => (
+const PrivateRoute = ({
+  component: Component,
+  auth,
+  allowed,
+  all,
+  ...rest
+}) => (
   <Route
     {...rest}
-    render={props =>
-      auth.isAuthenticated === true ? (
-        <Component {...props} />
-      ) : (
-        <Redirect to="/login" />
-      )
-    }
+    render={props => {
+      allowed = allowed ? allowed : ["vip", "agent", "admin"];
+      if (auth.isAuthenticated === true) {
+        if (allowed.includes(auth.role)) {
+          return <Component {...props} />;
+        } else {
+          return <Redirect to="/applications" />;
+        }
+      } else {
+        return <Redirect to="/login" />;
+      }
+    }}
   />
 );
 

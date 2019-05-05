@@ -43,7 +43,7 @@ router.post("/login", async (req, res) => {
       //generate token
       const payload = {
         id: user.id,
-        name: user.name,
+        nickname: user.nickname,
         avatar: user.avatar,
         role: user.role
       };
@@ -84,7 +84,7 @@ router.post("/register", async (req, res) => {
       });
 
       const newUser = new User({
-        name: req.body.name,
+        nickname: req.body.nickname,
         email: req.body.email,
         avatar: avatar,
         password: req.body.password

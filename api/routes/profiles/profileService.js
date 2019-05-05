@@ -6,8 +6,15 @@ exports.findProfileById = async id => {
   try {
     return await Profile.findOne({ user: id })
       .populate("user", ["name", "avatar"])
-      .populate("employment", ["title", "company"])
-      .populate("education", ["degree", "school"]);
+      .populate("employment", ["title", "company", "from", "to", "current"])
+      .populate("education", [
+        "degree",
+        "school",
+        "major",
+        "from",
+        "to",
+        "current"
+      ]);
   } catch (e) {
     throw e;
   }
@@ -23,7 +30,7 @@ exports.findAllProfiles = async () => {
 
 module.exports.updateProfile = async (id, fields) => {
   try {
-    return await Profile.findByIdAndUpdate(
+    return await Profile.findOneAndUpdate(
       { user: id },
       { $set: fields },
       { new: true }

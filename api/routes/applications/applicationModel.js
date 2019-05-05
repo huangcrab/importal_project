@@ -17,6 +17,10 @@ const ApplicationSchema = new Schema({
     enum: ["pending", "approved", "review"],
     default: "pending"
   },
+  preApprove: {
+    type: Boolean,
+    default: false
+  },
   populatedFields: {
     type: Object,
     required: true

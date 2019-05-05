@@ -1,5 +1,5 @@
 import React from "react";
-import spinner from "./loading.gif";
+import spinner from "./loading2.gif";
 export default () => {
   return (
     <div>

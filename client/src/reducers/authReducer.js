@@ -3,8 +3,8 @@ import isEmpty from "../validation/is-empty";
 
 const initialState = {
   isAuthenticated: false,
+  role: "",
   isAg: false,
-  isAd: false,
   user: {}
 };
 
@@ -14,8 +14,8 @@ export default function(state = initialState, action) {
       return {
         ...state,
         isAuthenticated: !isEmpty(action.payload),
+        role: action.payload.role,
         isAg: action.payload.role === "agent",
-        isAd: action.payload.role === "admin",
         user: action.payload
       };
     default:

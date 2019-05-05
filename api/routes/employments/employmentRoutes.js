@@ -17,7 +17,7 @@ router.get("/", auth, async (req, res, next) => {
     const profile = await profileService.findProfileById(req.user.id);
     if (profile.id) {
       const employments = await employmentService.getEmployments(profile.id);
-      res.json({ data: employments });
+      res.json({ result: employments });
     } else {
       res.status(404).json({ message: "Profile is not found" });
     }
@@ -53,7 +53,7 @@ router.post("/", auth, async (req, res, next) => {
     profile.employment.unshift(savedEmployment.id);
     profileService.createProfile(profile);
 
-    res.json({ data: [profile] });
+    res.json({ result: [profile] });
   } catch (e) {
     next(e);
   }
@@ -65,7 +65,10 @@ router.post("/", auth, async (req, res, next) => {
 router.delete("/:emp_id", auth, async (req, res, next) => {
   try {
     const profile = await profileService.findProfileById(req.user.id);
-    const removeIndex = profile.employment.indexOf(req.params.emp_id);
+    const removeIndex = profile.employment
+      .map(emp => emp.id)
+      .indexOf(req.params.emp_id);
+
     if (removeIndex !== -1) {
       profile.employment.splice(removeIndex, 1);
       try {
@@ -73,7 +76,7 @@ router.delete("/:emp_id", auth, async (req, res, next) => {
           req.params.emp_id
         );
         const newProfile = await profileService.createProfile(profile);
-        res.json({ data: [{ profile: newProfile }, { removed }] });
+        res.json({ result: [{ profile: newProfile }, { removed }] });
       } catch (e) {
         next(e);
       }

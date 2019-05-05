@@ -56,6 +56,7 @@ const server = http.createServer(router);
 // 10. Start server
 const { mongoUri } = require("./utils/constants");
 mongoose.connect(mongoUri, { useNewUrlParser: true }).then(() => {
+  mongoose.set("useFindAndModify", false);
   console.log("Monngodb is connected");
   server.listen(PORT, () => {
     console.log(`Server is running on PORT:${PORT}`);

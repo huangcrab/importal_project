@@ -13,15 +13,21 @@ const auth = require("../../middleware/auth");
 router.get("/", auth, async (req, res, next) => {
   try {
     const errs = {};
-    const applications = await applicationService.findApplicationsByUserId(
-      req.user.id
-    );
+    const { role } = req.user;
+    let applications;
+    if (role === "vip") {
+      applications = await applicationService.findApplicationsByUserId(
+        req.user.id
+      );
+    } else {
+      applications = await applicationService.findAllApplications();
+    }
 
     if (applications.length === 0) {
-      errs.noprofile = "There is no applications for this user";
+      errs.noprofile = "There is no applications";
       return res.status(404).json(errs);
     }
-    res.json({ data: applications });
+    res.json({ result: applications });
   } catch (e) {
     next(e);
   }
@@ -33,17 +39,17 @@ router.get("/", auth, async (req, res, next) => {
 router.get("/:app_id", auth, async (req, res, next) => {
   try {
     const errs = {};
-    const { id } = req.user;
+    const { id, role } = req.user;
     const application = await applicationService.findApplicationById(
       req.params.app_id
     );
     if (application) {
-      if (id !== application.user) {
+      if (id !== application.user.toString() && role === "vip") {
         res.status(401).json({
           message: "You are not authoraized to view this application"
         });
       }
-      res.json({ data: applications });
+      res.json({ result: application });
     } else {
       res.status(404).json({ message: "Application Not Found" });
     }
@@ -58,35 +64,57 @@ router.get("/:app_id", auth, async (req, res, next) => {
 router.post("/", auth, async (req, res, next) => {
   try {
     const errs = {};
+    const { role } = req.user;
     const applicationFields = req.body;
-    const applications = await applicationService.findApplicationsByUserId(
+    let applications;
+
+    applications = await applicationService.findApplicationsByUserId(
       req.user.id
     );
+
     // if (applications.length === 0) {
     //   errs.noprofile = "There is no applications for this user";
     //   return res.status(404).json(errs);
     // }
-    console.log(applications.map(application => application._id));
-    console.log(applicationFields.id);
+
     if (
       applications
         .map(application => application._id.toString())
-        .indexOf(applicationFields.id) !== -1
+        .indexOf(applicationFields.id) !== -1 ||
+      role === "agent"
     ) {
       console.log("tet");
       //FOUND - UPDATE
       const updatedApplication = await applicationService.updateApplication(
-        applicationFields.id,
+        applicationFields._id,
         applicationFields
       );
-      res.json({ data: updatedApplication });
+      res.json({ result: updatedApplication });
     } else {
       delete applicationFields.id;
       applicationFields.user = req.user.id;
       const newApplication = await applicationService.createApplication(
         applicationFields
       );
-      res.json({ data: newApplication });
+      res.json({ result: newApplication });
+    }
+  } catch (e) {
+    next(e);
+  }
+});
+
+//@route     DELETE api/application/
+//@desc      delete application
+//@access    PRIVATE
+router.delete("/:app_id", auth, async (req, res, next) => {
+  try {
+    const { id, role } = req.user;
+    const appId = req.params.app_id;
+    const application = await applicationService.findApplicationById(appId);
+
+    if (application.user === id || role === "agent" || role === "admin") {
+      const removed = await applicationFormService.removeApplicationForm(appId);
+      res.json({ result: removed });
     }
   } catch (e) {
     next(e);

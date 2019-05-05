@@ -19,7 +19,7 @@ router.get("/", auth, async (req, res, next) => {
       errs.noprofile = "There is no profile for this user";
       return res.status(404).json(errs);
     }
-    res.json(profile);
+    res.json({ result: [profile] });
   } catch (e) {
     next(e);
   }
@@ -39,7 +39,7 @@ router.get(
         errs.noprofile = "There are no profiles";
         return res.status(404).json(errs);
       }
-      res.json(profiles);
+      res.json({ result: [profiles] });
     } catch (e) {
       next(e);
     }
@@ -55,6 +55,8 @@ router.post("/", auth, async (req, res, next) => {
     const profileFields = {};
     profileFields.user = req.user.id;
 
+    profileFields.firstName = req.body.firstName;
+    profileFields.lastName = req.body.lastName;
     profileFields.gender = req.body.gender;
     profileFields.birthday = req.body.birthday;
     profileFields.birthCity = req.body.birthCity;
@@ -65,11 +67,14 @@ router.post("/", auth, async (req, res, next) => {
 
     const profile = await profileService.findProfileById(req.user.id);
     if (profile) {
-      const updatedProfile = profileService.updateProfile(id, profileFields);
-      res.json(updatedProfile);
+      const updatedProfile = await profileService.updateProfile(
+        req.user.id,
+        profileFields
+      );
+      res.json({ result: [updatedProfile] });
     } else {
       const newProfile = await profileService.createProfile(profileFields);
-      res.json(newProfile);
+      res.json({ result: [newProfile] });
     }
   } catch (e) {
     next(e);

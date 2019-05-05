@@ -17,7 +17,7 @@ router.get("/", auth, async (req, res, next) => {
     const profile = await profileService.findProfileById(req.user.id);
     if (profile.id) {
       const educations = await educationService.getEducations(profile.id);
-      res.json({ data: educations });
+      res.json({ result: educations });
     } else {
       res.status(404).json({ message: "Profile is not found" });
     }
@@ -54,7 +54,7 @@ router.post("/", auth, async (req, res, next) => {
     profile.education.unshift(savedEducation.id);
     profileService.createProfile(profile);
 
-    res.json({ data: [profile] });
+    res.json({ result: [profile] });
   } catch (e) {
     next(e);
   }
@@ -66,7 +66,11 @@ router.post("/", auth, async (req, res, next) => {
 router.delete("/:edu_id", auth, async (req, res, next) => {
   try {
     const profile = await profileService.findProfileById(req.user.id);
-    const removeIndex = profile.education.indexOf(req.params.edu_id);
+    const removeIndex = profile.education
+      .map(edu => edu.id)
+      .indexOf(req.params.edu_id);
+    console.log(profile.education.map(edu => edu._id));
+    console.log(req.params.edu_id);
     if (removeIndex !== -1) {
       profile.education.splice(removeIndex, 1);
       try {
@@ -74,7 +78,7 @@ router.delete("/:edu_id", auth, async (req, res, next) => {
           req.params.edu_id
         );
         const newProfile = await profileService.createProfile(profile);
-        res.json({ profile: newProfile, removed });
+        res.json({ result: [{ profile: newProfile }, { removed }] });
       } catch (e) {
         next(e);
       }

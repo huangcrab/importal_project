@@ -19,7 +19,7 @@ router.get("/", auth, async (req, res, next) => {
       errs.noforms = "There is no froms available";
       return res.status(404).json(errs);
     }
-    res.json({ data: forms });
+    res.json({ result: forms });
   } catch (e) {
     next(e);
   }
@@ -39,7 +39,7 @@ router.get("/:form_id", auth, async (req, res, next) => {
       errs.noforms = "There is no froms available";
       return res.status(404).json(errs);
     }
-    res.json({ data: forms });
+    res.json({ result: forms });
   } catch (e) {
     next(e);
   }
@@ -65,12 +65,12 @@ router.post(
           id,
           applicationFields
         );
-        res.json({ data: updatedForm });
+        res.json({ result: updatedForm });
       } else {
         const newApplicationForm = await applicationFormService.createApplicationForm(
           applicationFields
         );
-        res.json({ data: newApplicationForm });
+        res.json({ result: newApplicationForm });
       }
     } catch (e) {
       next(e);
@@ -89,7 +89,7 @@ router.delete(
     const id = req.params.app_id;
     try {
       const removed = await applicationFormService.removeApplicationForm(id);
-      res.json({ data: removed });
+      res.json({ result: removed });
     } catch (e) {
       next(e);
     }
