@@ -34,6 +34,7 @@ router.get("/:form_id", auth, async (req, res, next) => {
     const forms = await applicationFormService.findApplicationFormById(
       req.params.form_id
     );
+    console.log(req.params.form_id);
 
     if (forms.length === 0) {
       errs.noforms = "There is no froms available";

@@ -9,7 +9,7 @@
     "postinit": "npm run git:remote:set",
     "lint": "semistandard",
     "test": "react-scripts test",
-    "start": "pm2-runtime start process.config.js --env production",
+    "deploy": "node api.server.js",
     "start:server": "pm2 start process.config.js",
     "stop:server": "pm2 delete process.config.js",
     "logs:server": "pm2 logs /api/ --lines 10",

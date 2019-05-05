@@ -60,7 +60,7 @@ class Applications extends PureComponent {
                     return (
                       <Link
                         to={`/create-application/${form._id}`}
-                        className="btn btn-outline-secondary btn-lg mr-3"
+                        className="btn btn-outline-secondary mr-3"
                       >
                         {form.name.toUpperCase()}
                       </Link>

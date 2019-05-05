@@ -5,9 +5,9 @@ module.exports = {
       script: "./api/server.js",
       watch: ["api"],
       env: {
-        NODE_ENV: "production"
+        NODE_ENV: "development",
+        PORT: 4000
       },
-
       kill_timeout: 3000,
       wait_ready: true
     }
