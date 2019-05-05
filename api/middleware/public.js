@@ -1,10 +1,10 @@
-'use strict';
+"use strict";
 
-const express = require('express');
-const path = require('path');
+const express = require("express");
+const path = require("path");
 
 const publicOptions = {
-  dotfiles: 'ignore', // default
+  dotfiles: "ignore", // default
   etag: true, // default
   extensions: [],
   fallthrough: true, // default
@@ -13,12 +13,12 @@ const publicOptions = {
   lastModified: true, // default
   maxAge: 0, // default
   redirect: false, // default: true
-  setHeaders: function (res, path, stat) {
-    res.set('x-timestamp', Date.now());
-  },
+  setHeaders: function(res, path, stat) {
+    res.set("x-timestamp", Date.now());
+  }
 };
-const publicPath = path.resolve(__dirname, '../..', 'public');
+const publicPath = path.resolve(__dirname, "../..", "build");
 
-exports.handleServingPublicFolder = (router) => {
+exports.handleServingPublicFolder = router => {
   router.use(express.static(publicPath, publicOptions));
 };
